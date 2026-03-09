@@ -7,6 +7,8 @@ import trimesh
 import joblib
 from tqdm import tqdm
 import utils
+import subprocess
+import sys
 
 def get_gt_from_intersectionpn(name_list):
     cell_voxel_size = 8
@@ -37,8 +39,8 @@ def get_gt_from_intersectionpn(name_list):
     in_obj_name = in_name + ".obj"
     in_sdf_name = in_name + ".sdf"
     out_hdf5_name = out_name + ".hdf5"
-    command = "./SDFGen "+in_obj_name+" 128 0"
-    os.system(command)
+
+    subprocess.run(["./SDFGen", in_obj_name, "128", "0"])
 
     # read
     gt_mesh = trimesh.load(in_obj_name)
@@ -99,4 +101,3 @@ if __name__ == '__main__':
             [0, idx, in_name, out_name])
     joblib.Parallel(n_jobs=-1)(joblib.delayed(get_gt_from_intersectionpn)
                                (name) for name in (tqdm(list_of_names)))
-   

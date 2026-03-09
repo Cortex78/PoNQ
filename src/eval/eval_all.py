@@ -1,6 +1,8 @@
 import os
 import argparse
 import yaml
+import subprocess
+import sys
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -20,13 +22,10 @@ if __name__ == '__main__':
     elif args.subd > 1:
         suffix = "_lite_{}".format(args.subd)
 
-    os.system(
-        "python src/eval/eval_ABC.py {}/ABC_{}_32{}".format(args.output_folder, name, suffix))
-    os.system(
-        "python src/eval/eval_ABC.py {}/ABC_{}_64{}".format(args.output_folder, name, suffix))
-    os.system(
-        "python src/eval/eval_THINGI.py {}/Thingi_{}_32{}".format(args.output_folder, name, suffix))
-    os.system(
-        "python src/eval/eval_THINGI.py {}/Thingi_{}_64{}".format(args.output_folder, name, suffix))
-    os.system(
-        "python src/eval/eval_THINGI.py {}/Thingi_{}_128{}".format(args.output_folder, name, suffix))
+    python_executable = sys.executable or "python"
+
+    subprocess.run([python_executable, "src/eval/eval_ABC.py", "{}/ABC_{}_32{}".format(args.output_folder, name, suffix)])
+    subprocess.run([python_executable, "src/eval/eval_ABC.py", "{}/ABC_{}_64{}".format(args.output_folder, name, suffix)])
+    subprocess.run([python_executable, "src/eval/eval_THINGI.py", "{}/Thingi_{}_32{}".format(args.output_folder, name, suffix)])
+    subprocess.run([python_executable, "src/eval/eval_THINGI.py", "{}/Thingi_{}_64{}".format(args.output_folder, name, suffix)])
+    subprocess.run([python_executable, "src/eval/eval_THINGI.py", "{}/Thingi_{}_128{}".format(args.output_folder, name, suffix)])
