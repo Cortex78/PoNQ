@@ -4,6 +4,7 @@ import argparse
 from tqdm import tqdm
 import numpy as np
 import joblib
+import subprocess
 
 
 def define_options_parser():
@@ -32,8 +33,14 @@ def check_single(src_dir, model_name):
     empty = 0
     if len(v) > 0:
         wtop = not (even_edge_index(v, f))
-        wgeo = int(os.popen(
-            'src/cpp_utils/build/self_intersect {}{}'.format(src_dir, model_name)).read()[:-1])
+        try:
+            wgeo_out = subprocess.check_output(
+                ['src/cpp_utils/build/self_intersect', '{}{}'.format(src_dir, model_name)],
+                text=True)
+            wgeo = int(wgeo_out.strip())
+        except (subprocess.CalledProcessError, ValueError):
+            wgeo = 0 # or some other default/error handling
+
         if wtop:
             wrong_topology = 1
         if wgeo > 0:
