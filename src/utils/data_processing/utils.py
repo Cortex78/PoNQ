@@ -71,63 +71,52 @@ def dual_contouring_undc_test(int_grid, float_grid):
 
 
 def write_obj_triangle(name, vertices, triangles):
-    fout = open(name, 'w')
-    for ii in range(len(vertices)):
-        fout.write("v "+str(vertices[ii,0])+" "+str(vertices[ii,1])+" "+str(vertices[ii,2])+"\n")
-    for ii in range(len(triangles)):
-        fout.write("f "+str(int(triangles[ii,0]+1))+" "+str(int(triangles[ii,1]+1))+" "+str(int(triangles[ii,2]+1))+"\n")
-    fout.close()
+    with open(name, 'w') as fout:
+        fout.writelines(f"v {v[0]} {v[1]} {v[2]}\n" for v in vertices)
+        fout.writelines(f"f {int(t[0]+1)} {int(t[1]+1)} {int(t[2]+1)}\n" for t in triangles)
 
 def write_ply_triangle(name, vertices, triangles):
-    fout = open(name, 'w')
-    fout.write("ply\n")
-    fout.write("format ascii 1.0\n")
-    fout.write("element vertex "+str(len(vertices))+"\n")
-    fout.write("property float x\n")
-    fout.write("property float y\n")
-    fout.write("property float z\n")
-    fout.write("element face "+str(len(triangles))+"\n")
-    fout.write("property list uchar int vertex_index\n")
-    fout.write("end_header\n")
-    for ii in range(len(vertices)):
-        fout.write(str(vertices[ii,0])+" "+str(vertices[ii,1])+" "+str(vertices[ii,2])+"\n")
-    for ii in range(len(triangles)):
-        fout.write("3 "+str(triangles[ii,0])+" "+str(triangles[ii,1])+" "+str(triangles[ii,2])+"\n")
-    fout.close()
+    with open(name, 'w') as fout:
+        fout.write("ply\n")
+        fout.write("format ascii 1.0\n")
+        fout.write(f"element vertex {len(vertices)}\n")
+        fout.write("property float x\n")
+        fout.write("property float y\n")
+        fout.write("property float z\n")
+        fout.write(f"element face {len(triangles)}\n")
+        fout.write("property list uchar int vertex_index\n")
+        fout.write("end_header\n")
+        fout.writelines(f"{v[0]} {v[1]} {v[2]}\n" for v in vertices)
+        fout.writelines(f"3 {t[0]} {t[1]} {t[2]}\n" for t in triangles)
 
 
 def write_ply_point(name, vertices):
-    fout = open(name, 'w')
-    fout.write("ply\n")
-    fout.write("format ascii 1.0\n")
-    fout.write("element vertex "+str(len(vertices))+"\n")
-    fout.write("property float x\n")
-    fout.write("property float y\n")
-    fout.write("property float z\n")
-    fout.write("end_header\n")
-    for ii in range(len(vertices)):
-        fout.write(str(vertices[ii,0])+" "+str(vertices[ii,1])+" "+str(vertices[ii,2])+"\n")
-    fout.close()
+    with open(name, 'w') as fout:
+        fout.write("ply\n")
+        fout.write("format ascii 1.0\n")
+        fout.write(f"element vertex {len(vertices)}\n")
+        fout.write("property float x\n")
+        fout.write("property float y\n")
+        fout.write("property float z\n")
+        fout.write("end_header\n")
+        fout.writelines(f"{v[0]} {v[1]} {v[2]}\n" for v in vertices)
 
 def write_ply_point_normal(name, vertices, normals=None):
-    fout = open(name, 'w')
-    fout.write("ply\n")
-    fout.write("format ascii 1.0\n")
-    fout.write("element vertex "+str(len(vertices))+"\n")
-    fout.write("property float x\n")
-    fout.write("property float y\n")
-    fout.write("property float z\n")
-    fout.write("property float nx\n")
-    fout.write("property float ny\n")
-    fout.write("property float nz\n")
-    fout.write("end_header\n")
-    if normals is None:
-        for ii in range(len(vertices)):
-            fout.write(str(vertices[ii,0])+" "+str(vertices[ii,1])+" "+str(vertices[ii,2])+" "+str(vertices[ii,3])+" "+str(vertices[ii,4])+" "+str(vertices[ii,5])+"\n")
-    else:
-        for ii in range(len(vertices)):
-            fout.write(str(vertices[ii,0])+" "+str(vertices[ii,1])+" "+str(vertices[ii,2])+" "+str(normals[ii,0])+" "+str(normals[ii,1])+" "+str(normals[ii,2])+"\n")
-    fout.close()
+    with open(name, 'w') as fout:
+        fout.write("ply\n")
+        fout.write("format ascii 1.0\n")
+        fout.write(f"element vertex {len(vertices)}\n")
+        fout.write("property float x\n")
+        fout.write("property float y\n")
+        fout.write("property float z\n")
+        fout.write("property float nx\n")
+        fout.write("property float ny\n")
+        fout.write("property float nz\n")
+        fout.write("end_header\n")
+        if normals is None:
+            fout.writelines(f"{v[0]} {v[1]} {v[2]} {v[3]} {v[4]} {v[5]}\n" for v in vertices)
+        else:
+            fout.writelines(f"{v[0]} {v[1]} {v[2]} {n[0]} {n[1]} {n[2]}\n" for v, n in zip(vertices, normals))
 
 
 def read_intersectionpn_file_as_2d_array(name):
